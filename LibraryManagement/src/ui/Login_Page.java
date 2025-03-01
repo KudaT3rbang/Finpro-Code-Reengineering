@@ -1,3 +1,5 @@
+package ui;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
@@ -7,18 +9,18 @@
  *
  * @author Christian
  */
+import util.Javaconnect;
 import java.sql.*;
 import javax.swing.JOptionPane;
 
-public class Signup_Page extends javax.swing.JFrame {
+public class Login_Page extends javax.swing.JFrame {
 Connection conn;
 ResultSet rs;
 PreparedStatement pst;
-
     /**
-     * Creates new form Signup_Page
+     * Creates new form Login_Page
      */
-    public Signup_Page() {
+    public Login_Page() {
         super("Login_Page");
         initComponents();
         conn = Javaconnect.ConnecrDb();
@@ -36,39 +38,44 @@ PreparedStatement pst;
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
         username_tField = new javax.swing.JTextField();
-        name_tField = new javax.swing.JTextField();
-        password_tField = new javax.swing.JTextField();
-        RecoveryCode_tField = new javax.swing.JTextField();
-        button_Create = new javax.swing.JButton();
-        button_Back = new javax.swing.JButton();
+        password_tField = new javax.swing.JPasswordField();
+        button_Signup = new javax.swing.JButton();
+        button_Login = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        button_RetrievePassword = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI Black", 1, 18)); // NOI18N
-        jLabel1.setText("CREATE ACCOUNT");
+        jLabel1.setText("LOGIN PAGE");
 
         jLabel2.setText("Username:");
 
-        jLabel3.setText("Name:");
+        jLabel3.setText("Password:");
 
-        jLabel4.setText("Password");
-
-        jLabel5.setText("Recovery Code:");
-
-        button_Create.setText("Create");
-        button_Create.addActionListener(new java.awt.event.ActionListener() {
+        button_Signup.setText("Signup");
+        button_Signup.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                button_CreateActionPerformed(evt);
+                button_SignupActionPerformed(evt);
             }
         });
 
-        button_Back.setText("Back");
-        button_Back.addActionListener(new java.awt.event.ActionListener() {
+        button_Login.setText("Login");
+        button_Login.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                button_BackActionPerformed(evt);
+                button_LoginActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setForeground(new java.awt.Color(204, 0, 0));
+        jLabel4.setText("Forgot Password?");
+
+        button_RetrievePassword.setForeground(new java.awt.Color(204, 0, 0));
+        button_RetrievePassword.setText("Change Password");
+        button_RetrievePassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_RetrievePasswordActionPerformed(evt);
             }
         });
 
@@ -77,32 +84,31 @@ PreparedStatement pst;
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(31, 31, 31)
+                .addGap(30, 30, 30)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel4)
                     .addComponent(jLabel1)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel5))
-                        .addGap(28, 28, 28)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(button_Back)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
-                                .addComponent(button_Create))
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(username_tField)
-                                .addComponent(name_tField)
-                                .addComponent(password_tField)
-                                .addComponent(RecoveryCode_tField, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)))))
-                .addContainerGap(69, Short.MAX_VALUE))
+                            .addComponent(jLabel3))
+                        .addGap(37, 37, 37)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(username_tField)
+                            .addComponent(password_tField)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(67, 67, 67)
+                                .addComponent(button_RetrievePassword, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(button_Signup)
+                        .addGap(18, 18, 18)
+                        .addComponent(button_Login)))
+                .addContainerGap(48, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(28, 28, 28)
+                .addGap(25, 25, 25)
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -111,50 +117,62 @@ PreparedStatement pst;
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(name_tField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
                     .addComponent(password_tField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(RecoveryCode_tField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(button_Signup)
+                    .addComponent(button_Login))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(button_Create)
-                    .addComponent(button_Back))
-                .addContainerGap(45, Short.MAX_VALUE))
+                    .addComponent(jLabel4)
+                    .addComponent(button_RetrievePassword))
+                .addContainerGap(87, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void button_CreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_CreateActionPerformed
-        try{      
-            String insert_sql = "INSERT INTO Account (username, name, password, recoveryCode) VALUES (?,?,?,?)";
-            pst = conn.prepareStatement(insert_sql);
+    private void button_SignupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_SignupActionPerformed
+        setVisible(false);
+        Signup_Page ob = new Signup_Page();
+        ob.setVisible(true);
+    }//GEN-LAST:event_button_SignupActionPerformed
+
+    private void button_LoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_LoginActionPerformed
+        String sql = "SELECT * FROM Account WHERE username =? AND password = ?";
+        try{
+            pst = conn.prepareStatement(sql);
             pst.setString(1, username_tField.getText());
-            pst.setString(2, name_tField.getText());
-            pst.setString(3, password_tField.getText());
-            pst.setString(4, RecoveryCode_tField.getText());
+            pst.setString(2, password_tField.getText());
+            rs = pst.executeQuery();
+            if(rs.next()){
+                rs.close();
+                pst.close();
+                setVisible(false);
+                Main_Page ob = new Main_Page();
+                ob.setVisible(true);
+            }
             
-            pst.execute();
-            
-            JOptionPane.showMessageDialog(null, "Account Created!");
-            
-            rs.close();
-            pst.close();
+            else{
+                JOptionPane.showMessageDialog(null, "Incorrect Password or Username!");
+            }
         }catch(Exception e){
                 JOptionPane.showMessageDialog(null, e);
-            }
-    }//GEN-LAST:event_button_CreateActionPerformed
+            }finally{
+                    try{
+                        rs.close();
+                        pst.close();
+                    }catch(Exception e){
+                           
+                        }
+                }
+    }//GEN-LAST:event_button_LoginActionPerformed
 
-    private void button_BackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_BackActionPerformed
+    private void button_RetrievePasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_RetrievePasswordActionPerformed
         setVisible(false);
-        Login_Page ob = new Login_Page();
+        Recover_Page ob = new Recover_Page();
         ob.setVisible(true);
-    }//GEN-LAST:event_button_BackActionPerformed
+    }//GEN-LAST:event_button_RetrievePasswordActionPerformed
 
     /**
      * @param args the command line arguments
@@ -173,35 +191,33 @@ PreparedStatement pst;
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Signup_Page.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Login_Page.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Signup_Page.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Login_Page.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Signup_Page.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Login_Page.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Signup_Page.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Login_Page.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Signup_Page().setVisible(true);
+                new Login_Page().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField RecoveryCode_tField;
-    private javax.swing.JButton button_Back;
-    private javax.swing.JButton button_Create;
+    private javax.swing.JButton button_Login;
+    private javax.swing.JButton button_RetrievePassword;
+    private javax.swing.JButton button_Signup;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JTextField name_tField;
-    private javax.swing.JTextField password_tField;
+    private javax.swing.JPasswordField password_tField;
     private javax.swing.JTextField username_tField;
     // End of variables declaration//GEN-END:variables
 }
