@@ -36,12 +36,8 @@
                       </Group>
                       <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Group type="102" attributes="0">
-                              <Component id="ID_tField" min="-2" pref="150" max="-2" attributes="0"/>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="button_Search" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <Component id="title_tField" max="32767" attributes="0"/>
+                          <Component id="bookID_tField" min="-2" pref="150" max="-2" attributes="0"/>
+                          <Component id="title_tField" pref="240" max="32767" attributes="0"/>
                           <Component id="writer_tField" max="32767" attributes="0"/>
                           <Component id="page_tField" max="32767" attributes="0"/>
                       </Group>
@@ -64,8 +60,7 @@
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="ID_tField" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="button_Search" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="bookID_tField" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -87,7 +82,7 @@
                   <Component id="button_Confirm" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="button_Back" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="34" max="32767" attributes="0"/>
+              <EmptySpace pref="35" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -121,15 +116,7 @@
         <Property name="text" type="java.lang.String" value="Page:"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="ID_tField">
-    </Component>
-    <Component class="javax.swing.JButton" name="button_Search">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Search"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="button_SearchActionPerformed"/>
-      </Events>
+    <Component class="javax.swing.JTextField" name="bookID_tField">
     </Component>
     <Component class="javax.swing.JTextField" name="title_tField">
     </Component>

@@ -4,35 +4,33 @@ package ui;
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-
 /**
  *
  * @author Christian
  */
-
+import controller.BookController;
 import util.Javaconnect;
 import java.sql.*;
 import javax.swing.JOptionPane;
 import java.util.Random;
+import model.Book;
 
 public class NewBook_Page extends javax.swing.JFrame {
-Connection conn;
-ResultSet rs;
-PreparedStatement pst;
-    /**
-     * Creates new form NewBook_Page
-     */
+
+    BookController bookController = new BookController();
+
     public NewBook_Page() {
         super("NewBook_Page");
         initComponents();
-        conn = Javaconnect.ConnecrDb();
-        RandomID();
+        generateAndSetRandomBookID();
     }
 
-    public void RandomID(){
-        Random rd = new Random();
-        bookID_tField.setText("" + rd.nextInt(1000+1));
+    private void generateAndSetRandomBookID() {
+        String randomID = bookController.generateRandomBookID();
+        bookID_tField.setText(randomID);
+        bookID_tField.setEditable(false);
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -49,8 +47,8 @@ PreparedStatement pst;
         title_tField = new javax.swing.JTextField();
         writer_tField = new javax.swing.JTextField();
         page_tField = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        button_add = new javax.swing.JButton();
+        button_back = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
         bookID_tField = new javax.swing.JTextField();
 
@@ -65,17 +63,17 @@ PreparedStatement pst;
 
         jLabel6.setText("Page:");
 
-        jButton1.setText("Confirm");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        button_add.setText("Confirm");
+        button_add.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                button_addActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Back");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        button_back.setText("Back");
+        button_back.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                button_backActionPerformed(evt);
             }
         });
 
@@ -91,9 +89,9 @@ PreparedStatement pst;
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton2)
+                        .addComponent(button_back)
                         .addGap(22, 22, 22)
-                        .addComponent(jButton1))
+                        .addComponent(button_add))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(30, 30, 30)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -134,78 +132,55 @@ PreparedStatement pst;
                     .addComponent(page_tField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
-                    .addComponent(jButton1))
+                    .addComponent(button_back)
+                    .addComponent(button_add))
                 .addContainerGap(25, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        String sql = "INSERT INTO Book (ID, title, writer, page) VALUES (?,?,?,?)";
-        try{
-            pst = conn.prepareStatement(sql);
-            pst.setString(1, bookID_tField.getText());
-            pst.setString(2, title_tField.getText());
-            pst.setString(3, writer_tField.getText());
-            pst.setString(4, page_tField.getText());
-            
-            pst.execute();
-            rs.close();
-            pst.close();
-            JOptionPane.showMessageDialog(null, "New Book Has Been Added!");
-                        
-        }catch(Exception e){
-                JOptionPane.showMessageDialog(null, e);
-            }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void button_addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_addActionPerformed
+        String id = bookID_tField.getText();
+        String title = title_tField.getText();
+        String writer = writer_tField.getText();
+        String pageStr = page_tField.getText();
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        try {
+            int pageCount = Integer.parseInt(pageStr);
+            Book book = new Book(id, title, writer, pageCount);
+
+            boolean success = bookController.addNewBook(book);
+            if (success) {
+                JOptionPane.showMessageDialog(this, "Book added successfully!");
+                setVisible(false);
+                new Main_Page().setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(this, "Failed to add book.");
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Page count must be a number.");
+        }
+    }//GEN-LAST:event_button_addActionPerformed
+
+    private void button_backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_backActionPerformed
         setVisible(false);
-        Main_Page ob = new Main_Page();
-        ob.setVisible(true);
-    }//GEN-LAST:event_jButton2ActionPerformed
+        new Main_Page().setVisible(true);
+    }//GEN-LAST:event_button_backActionPerformed
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(NewBook_Page.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(NewBook_Page.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(NewBook_Page.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(NewBook_Page.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new NewBook_Page().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new NewBook_Page().setVisible(true);
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField bookID_tField;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton button_add;
+    private javax.swing.JButton button_back;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

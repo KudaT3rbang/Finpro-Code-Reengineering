@@ -5,73 +5,39 @@ package ui;
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-
 /**
  *
  * @author Christian
  */
-import util.Javaconnect;
-import java.sql.*;
+import controller.BookController;
 import javax.swing.JOptionPane;
+import model.Book;
 
 public class Update_Page extends javax.swing.JFrame {
-Connection conn;
-ResultSet rs;
-PreparedStatement pst;
-    /**
-     * Creates new form Update_Page
-     */
+
+    BookController bookController = new BookController();
+    private final String bookID;
+
     public Update_Page(String bookID) {
         super("Update_Page");
+        this.bookID = bookID;
         initComponents();
-        conn = Javaconnect.ConnecrDb();
-        ID_tField.setText(bookID);
-        search();
+        loadBookData(bookID);
     }
-    
-    public void search(){
-        String ID = ID_tField.getText();
-        String sql = "SELECT * FROM Book WHERE ID = '"+ID+"'";
-        try{
-            pst = conn.prepareStatement(sql);
-            rs = pst.executeQuery();
-            if(rs.next()){
-                title_tField.setText(rs.getString(2));
-                writer_tField.setText(rs.getString(3));
-                page_tField.setText(rs.getString(4));
-                
-                rs.close();
-                pst.close();
-            }  
-            else{
-                JOptionPane.showMessageDialog(null, "ID Not Found!");
-            }
-        }catch(Exception e){
-                JOptionPane.showMessageDialog(null, e);
-            }       
-    }
-    
-    public void update(){
-        String ID = ID_tField.getText();
-        String newTitle = title_tField.getText();
-        String newWriter = writer_tField.getText();
-        String newPage = page_tField.getText();
-        
-        try{
-            String sql = "UPDATE Book SET title= ?, writer = ?, page = ? WHERE ID = ?";
-            pst = conn.prepareStatement(sql);
-            pst.setString(1, newTitle);
-            pst.setString(2, newWriter);
-            pst.setString(3, newPage);
-            pst.setString(4, ID);
-            pst.executeUpdate();
-            
-            rs.close();
-            pst.close();
-            JOptionPane.showMessageDialog(null, "Book Has Been Updated!");
-        }catch(Exception e){
-                    JOptionPane.showMessageDialog(null, e);
-                }        
+
+    private void loadBookData(String bookID) {
+        Book book = bookController.getBookById(bookID);
+        if (book != null) {
+            bookID_tField.setText(book.getId());
+            bookID_tField.setEditable(false);
+            title_tField.setText(book.getTitle());
+            writer_tField.setText(book.getWriter());
+            page_tField.setText(String.valueOf(book.getPageCount()));
+        } else {
+            JOptionPane.showMessageDialog(this, "Book not found.");
+            setVisible(false);
+            new Main_Page().setVisible(true);
+        }
     }
 
     /**
@@ -88,8 +54,7 @@ PreparedStatement pst;
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        ID_tField = new javax.swing.JTextField();
-        button_Search = new javax.swing.JButton();
+        bookID_tField = new javax.swing.JTextField();
         title_tField = new javax.swing.JTextField();
         writer_tField = new javax.swing.JTextField();
         page_tField = new javax.swing.JTextField();
@@ -108,13 +73,6 @@ PreparedStatement pst;
         jLabel4.setText("Writer:");
 
         jLabel5.setText("Page:");
-
-        button_Search.setText("Search");
-        button_Search.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                button_SearchActionPerformed(evt);
-            }
-        });
 
         button_Confirm.setText("Confirm");
         button_Confirm.addActionListener(new java.awt.event.ActionListener() {
@@ -146,11 +104,8 @@ PreparedStatement pst;
                             .addComponent(jLabel5))
                         .addGap(36, 36, 36)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(ID_tField, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(button_Search))
-                            .addComponent(title_tField)
+                            .addComponent(bookID_tField, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(title_tField, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
                             .addComponent(writer_tField)
                             .addComponent(page_tField)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -167,8 +122,7 @@ PreparedStatement pst;
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(ID_tField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(button_Search))
+                    .addComponent(bookID_tField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
@@ -185,7 +139,7 @@ PreparedStatement pst;
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(button_Confirm)
                     .addComponent(button_Back))
-                .addContainerGap(34, Short.MAX_VALUE))
+                .addContainerGap(35, Short.MAX_VALUE))
         );
 
         pack();
@@ -193,58 +147,44 @@ PreparedStatement pst;
 
     private void button_BackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_BackActionPerformed
         setVisible(false);
-        Main_Page ob = new Main_Page();
-        ob.setVisible(true);
+        new Main_Page().setVisible(true);
     }//GEN-LAST:event_button_BackActionPerformed
 
-    private void button_SearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_SearchActionPerformed
-        search();
-    }//GEN-LAST:event_button_SearchActionPerformed
-
     private void button_ConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_ConfirmActionPerformed
-        update();
+        String title = title_tField.getText();
+        String writer = writer_tField.getText();
+        String pageStr = page_tField.getText();
+
+        try {
+            int pageCount = Integer.parseInt(pageStr);
+            Book updatedBook = new Book(bookID, title, writer, pageCount);
+
+            boolean success = bookController.updateBook(updatedBook);
+            if (success) {
+                JOptionPane.showMessageDialog(this, "Book updated successfully!");
+                setVisible(false);
+                new Main_Page().setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(this, "Failed to update book.");
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Page count must be a number.");
+        }
     }//GEN-LAST:event_button_ConfirmActionPerformed
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Update_Page.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Update_Page.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Update_Page.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Update_Page.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Update_Page("").setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new Update_Page("dummyID").setVisible(true);
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField ID_tField;
+    private javax.swing.JTextField bookID_tField;
     private javax.swing.JButton button_Back;
     private javax.swing.JButton button_Confirm;
-    private javax.swing.JButton button_Search;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

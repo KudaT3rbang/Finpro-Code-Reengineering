@@ -4,26 +4,17 @@ package ui;
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-
 /**
  *
  * @author Christian
  */
-import util.Javaconnect;
-import java.sql.*;
+import controller.AccountController;
 import javax.swing.JOptionPane;
 
 public class Login_Page extends javax.swing.JFrame {
-Connection conn;
-ResultSet rs;
-PreparedStatement pst;
-    /**
-     * Creates new form Login_Page
-     */
     public Login_Page() {
         super("Login_Page");
         initComponents();
-        conn = Javaconnect.ConnecrDb();
     }
 
     /**
@@ -134,78 +125,31 @@ PreparedStatement pst;
 
     private void button_SignupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_SignupActionPerformed
         setVisible(false);
-        Signup_Page ob = new Signup_Page();
-        ob.setVisible(true);
+        new Signup_Page().setVisible(true);
     }//GEN-LAST:event_button_SignupActionPerformed
 
     private void button_LoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_LoginActionPerformed
-        String sql = "SELECT * FROM Account WHERE username =? AND password = ?";
-        try{
-            pst = conn.prepareStatement(sql);
-            pst.setString(1, username_tField.getText());
-            pst.setString(2, password_tField.getText());
-            rs = pst.executeQuery();
-            if(rs.next()){
-                rs.close();
-                pst.close();
-                setVisible(false);
-                Main_Page ob = new Main_Page();
-                ob.setVisible(true);
-            }
-            
-            else{
-                JOptionPane.showMessageDialog(null, "Incorrect Password or Username!");
-            }
-        }catch(Exception e){
-                JOptionPane.showMessageDialog(null, e);
-            }finally{
-                    try{
-                        rs.close();
-                        pst.close();
-                    }catch(Exception e){
-                           
-                        }
-                }
+        String username = username_tField.getText();
+        String password = new String(password_tField.getPassword());
+
+        AccountController accountController = new AccountController();
+        boolean success = accountController.authenticate(username, password);
+        if (success) {
+            setVisible(false);
+            new Main_Page().setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(this, "Incorrect Username or Password!");
+        }
     }//GEN-LAST:event_button_LoginActionPerformed
 
     private void button_RetrievePasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_RetrievePasswordActionPerformed
         setVisible(false);
-        Recover_Page ob = new Recover_Page();
-        ob.setVisible(true);
+        new Recover_Page().setVisible(true);
     }//GEN-LAST:event_button_RetrievePasswordActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Login_Page.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Login_Page.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Login_Page.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Login_Page.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Login_Page().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new Login_Page().setVisible(true);
         });
     }
 

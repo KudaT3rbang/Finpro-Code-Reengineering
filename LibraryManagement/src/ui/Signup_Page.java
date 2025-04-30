@@ -4,27 +4,18 @@ package ui;
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-
 /**
  *
  * @author Christian
  */
-import util.Javaconnect;
-import java.sql.*;
+import controller.AccountController;
 import javax.swing.JOptionPane;
 
 public class Signup_Page extends javax.swing.JFrame {
-Connection conn;
-ResultSet rs;
-PreparedStatement pst;
 
-    /**
-     * Creates new form Signup_Page
-     */
     public Signup_Page() {
-        super("Login_Page");
+        super("Signup_Page");
         initComponents();
-        conn = Javaconnect.ConnecrDb();
     }
 
     /**
@@ -38,15 +29,13 @@ PreparedStatement pst;
 
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         username_tField = new javax.swing.JTextField();
-        name_tField = new javax.swing.JTextField();
-        password_tField = new javax.swing.JTextField();
-        RecoveryCode_tField = new javax.swing.JTextField();
+        recoverycode_tField = new javax.swing.JTextField();
         button_Create = new javax.swing.JButton();
         button_Back = new javax.swing.JButton();
+        password_tField = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -55,11 +44,15 @@ PreparedStatement pst;
 
         jLabel2.setText("Username:");
 
-        jLabel3.setText("Name:");
-
         jLabel4.setText("Password");
 
         jLabel5.setText("Recovery Code:");
+
+        recoverycode_tField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                recoverycode_tFieldActionPerformed(evt);
+            }
+        });
 
         button_Create.setText("Create");
         button_Create.addActionListener(new java.awt.event.ActionListener() {
@@ -75,6 +68,13 @@ PreparedStatement pst;
             }
         });
 
+        password_tField.setText("jPasswordField1");
+        password_tField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                password_tFieldActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -86,7 +86,6 @@ PreparedStatement pst;
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
-                            .addComponent(jLabel3)
                             .addComponent(jLabel4)
                             .addComponent(jLabel5))
                         .addGap(28, 28, 28)
@@ -96,9 +95,8 @@ PreparedStatement pst;
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
                                 .addComponent(button_Create))
                             .addComponent(username_tField, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(name_tField, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(password_tField, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(RecoveryCode_tField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE))))
+                            .addComponent(recoverycode_tField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
+                            .addComponent(password_tField, javax.swing.GroupLayout.Alignment.LEADING))))
                 .addContainerGap(69, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -112,98 +110,70 @@ PreparedStatement pst;
                     .addComponent(username_tField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(name_tField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(password_tField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(RecoveryCode_tField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(recoverycode_tField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(button_Create)
                     .addComponent(button_Back))
-                .addContainerGap(45, Short.MAX_VALUE))
+                .addContainerGap(85, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void button_CreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_CreateActionPerformed
-        try{      
-            String insert_sql = "INSERT INTO Account (username, name, password, recoveryCode) VALUES (?,?,?,?)";
-            pst = conn.prepareStatement(insert_sql);
-            pst.setString(1, username_tField.getText());
-            pst.setString(2, name_tField.getText());
-            pst.setString(3, password_tField.getText());
-            pst.setString(4, RecoveryCode_tField.getText());
-            
-            pst.execute();
-            
-            JOptionPane.showMessageDialog(null, "Account Created!");
-            
-            rs.close();
-            pst.close();
-        }catch(Exception e){
-                JOptionPane.showMessageDialog(null, e);
-            }
+        String username = username_tField.getText();
+        String password = new String(password_tField.getPassword());
+        String recoveryCode = recoverycode_tField.getText();
+
+        AccountController controller = new AccountController();
+        boolean success = controller.signup(username, password, recoveryCode);
+
+        if (success) {
+            JOptionPane.showMessageDialog(this, "Account Created Successfully!");
+            setVisible(false);
+            new Login_Page().setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(this, "Failed to create account. Please try again.");
+        }
     }//GEN-LAST:event_button_CreateActionPerformed
 
     private void button_BackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_BackActionPerformed
         setVisible(false);
-        Login_Page ob = new Login_Page();
-        ob.setVisible(true);
+        new Login_Page().setVisible(true);
     }//GEN-LAST:event_button_BackActionPerformed
+
+    private void recoverycode_tFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recoverycode_tFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_recoverycode_tFieldActionPerformed
+
+    private void password_tFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_password_tFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_password_tFieldActionPerformed
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Signup_Page.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Signup_Page.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Signup_Page.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Signup_Page.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Signup_Page().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new Signup_Page().setVisible(true);
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField RecoveryCode_tField;
     private javax.swing.JButton button_Back;
     private javax.swing.JButton button_Create;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JTextField name_tField;
-    private javax.swing.JTextField password_tField;
+    private javax.swing.JPasswordField password_tField;
+    private javax.swing.JTextField recoverycode_tField;
     private javax.swing.JTextField username_tField;
     // End of variables declaration//GEN-END:variables
 }

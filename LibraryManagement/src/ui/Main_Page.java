@@ -1,95 +1,36 @@
 package ui;
 
-
-
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-
 /**
  *
  * @author Christian
  */
-import util.Javaconnect;
-import java.sql.*;
+import controller.BookController;
+import model.Book;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class Main_Page extends javax.swing.JFrame {
-Connection conn;
-ResultSet rs;
-PreparedStatement pst;
-private String bookID;
-    /**
-     * Creates new form Main_Page
-     */
+
+    BookController bookController = new BookController();
+
     public Main_Page() {
+        super("Main_Page");
         initComponents();
-        conn = Javaconnect.ConnecrDb();
         loadTable();
     }
 
-    public void delete(){
-        String ID = bookID;
-        String sql = "DELETE FROM Book WHERE ID ='"+ID+"'";
-        try{
-            pst = conn.prepareStatement(sql);
-            pst.executeUpdate();
-            rs.close();
-            pst.close();
-            JOptionPane.showMessageDialog(null, "Book Has Been Removed!");
-        }catch(Exception e){
-                    JOptionPane.showMessageDialog(null, e);
-                }        
-    }
-
-    public void search(){
-        String searchKey = searchBar_tField.getText();
-        DefaultTableModel model = new DefaultTableModel(new String[]{"ID", "title", "writer", "page"}, 0);
-          
-        String sql = "SELECT * FROM Book WHERE ID LIKE '"+searchKey+"' OR title LIKE LOWER('%" +searchKey+"%') OR TITLE LIKE UPPER('"+searchKey+"%') OR TITLE LIKE '%"+searchKey+"%'";
-        try{
-            pst = conn.prepareStatement(sql);
-            rs = pst.executeQuery();
-            while(rs.next()){           
-                    String ID = rs.getString("ID");
-                    String title = rs.getString("title");
-                    String writer = rs.getString("writer");
-                    int page = rs.getInt("page");
-                    model.addRow(new Object[]{ID, title, writer, page});
-
-            } 
-
-            if(model.getRowCount() == 0){
-                JOptionPane.showMessageDialog(null, "No matching books found.");
-            }
-            Table1.setModel(model);            
-            rs.close();
-            pst.close();
-        }catch(Exception e){
-                JOptionPane.showMessageDialog(null, e);
-            }       
-    }
-    
-    private void loadTable(){
-        DefaultTableModel model = new DefaultTableModel(new String[]{"ID", "title", "writer", "page"}, 0);
-        try{
-            String sql = "SELECT * FROM Book";
-            pst = conn.prepareStatement(sql);
-            rs = pst.executeQuery();
-            
-            while(rs.next()){
-                String ID = rs.getString("ID");
-                String title = rs.getString("title");
-                String writer = rs.getString("writer");
-                int page = rs.getInt("page");
-                model.addRow(new Object[]{ID, title, writer, page});
-            }
-            Table1.setModel(model);
-        }catch(Exception e){
-                JOptionPane.showMessageDialog(null, e);
-            }
+    private void loadTable() {
+        List<Book> books = bookController.getAllBooks();
+        DefaultTableModel model = (DefaultTableModel) book_table.getModel();
+        model.setRowCount(0);
+        for (Book book : books) {
+            model.addRow(new Object[]{book.getId(), book.getTitle(), book.getWriter(), book.getPageCount()});
+        }
     }
 
     /**
@@ -102,19 +43,19 @@ private String bookID;
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        Table1 = new javax.swing.JTable();
+        book_table = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         button_AddNewBook = new javax.swing.JButton();
         button_DeleteBook = new javax.swing.JButton();
         button_UpdateData = new javax.swing.JButton();
         button_Exit = new javax.swing.JButton();
         button_Logout = new javax.swing.JButton();
-        searchBar_tField = new javax.swing.JTextField();
+        search_tField = new javax.swing.JTextField();
         button_search = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        Table1.setModel(new javax.swing.table.DefaultTableModel(
+        book_table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -140,12 +81,12 @@ private String bookID;
                 return canEdit [columnIndex];
             }
         });
-        Table1.addMouseListener(new java.awt.event.MouseAdapter() {
+        book_table.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                Table1MouseClicked(evt);
+                book_tableMouseClicked(evt);
             }
         });
-        jScrollPane1.setViewportView(Table1);
+        jScrollPane1.setViewportView(book_table);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI Black", 1, 24)); // NOI18N
         jLabel1.setText("MAIN PAGE");
@@ -200,7 +141,7 @@ private String bookID;
                 .addGap(51, 51, 51)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(searchBar_tField, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(search_tField, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -229,7 +170,7 @@ private String bookID;
                 .addComponent(jLabel1)
                 .addGap(19, 19, 19)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(searchBar_tField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(search_tField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(button_search))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -256,82 +197,68 @@ private String bookID;
 
     private void button_AddNewBookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_AddNewBookActionPerformed
         setVisible(false);
-        NewBook_Page ob = new NewBook_Page();
-        ob.setVisible(true);
+        new NewBook_Page().setVisible(true);
     }//GEN-LAST:event_button_AddNewBookActionPerformed
 
     private void button_LogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_LogoutActionPerformed
         setVisible(false);
-        Login_Page ob = new Login_Page();
-        ob.setVisible(true);
+        new Login_Page().setVisible(true);
     }//GEN-LAST:event_button_LogoutActionPerformed
 
     private void button_DeleteBookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_DeleteBookActionPerformed
-        delete();
-        loadTable();
+        int selectedRow = book_table.getSelectedRow();
+        if (selectedRow != -1) {
+            String bookID = book_table.getValueAt(selectedRow, 0).toString();
+            int confirm = JOptionPane.showConfirmDialog(this, "Are you sure to delete?", "Delete", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                if (bookController.deleteBook(bookID)) {
+                    JOptionPane.showMessageDialog(this, "Book deleted successfully!");
+                    loadTable();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Failed to delete book.");
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Please select a book to delete.");
+        }
     }//GEN-LAST:event_button_DeleteBookActionPerformed
 
     private void button_UpdateDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_UpdateDataActionPerformed
-        setVisible(false);
-        Update_Page ob = new Update_Page(bookID);
-        ob.setVisible(true);
+        int selectedRow = book_table.getSelectedRow();
+        if (selectedRow != -1) {
+            String bookID = book_table.getValueAt(selectedRow, 0).toString();
+            setVisible(false);
+            new Update_Page(bookID).setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(this, "Please select a book to update.");
+        }
     }//GEN-LAST:event_button_UpdateDataActionPerformed
 
-    private void Table1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Table1MouseClicked
+    private void book_tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_book_tableMouseClicked
 
-        int row = Table1.getSelectedRow();       
-        bookID = Table1.getModel().getValueAt(row, 0).toString();
-        System.out.println("" +bookID);
-    }//GEN-LAST:event_Table1MouseClicked
+    }//GEN-LAST:event_book_tableMouseClicked
 
     private void button_searchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_searchActionPerformed
-        String searchKey = searchBar_tField.getText();        
-        if(searchKey.isEmpty()){
-            loadTable();
+        String keyword = search_tField.getText();
+        List<Book> books = bookController.searchBooks(keyword);
+        DefaultTableModel model = (DefaultTableModel) book_table.getModel();
+        model.setRowCount(0);
+        for (Book book : books) {
+            model.addRow(new Object[]{book.getId(), book.getTitle(), book.getWriter(), book.getPageCount()});
         }
-        else{
-            search();           
-        }
-
     }//GEN-LAST:event_button_searchActionPerformed
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Main_Page.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Main_Page.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Main_Page.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Main_Page.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Main_Page().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new Main_Page().setVisible(true);
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTable Table1;
+    private javax.swing.JTable book_table;
     private javax.swing.JButton button_AddNewBook;
     private javax.swing.JButton button_DeleteBook;
     private javax.swing.JButton button_Exit;
@@ -340,6 +267,6 @@ private String bookID;
     private javax.swing.JButton button_search;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField searchBar_tField;
+    private javax.swing.JTextField search_tField;
     // End of variables declaration//GEN-END:variables
 }
